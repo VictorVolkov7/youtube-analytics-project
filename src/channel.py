@@ -16,9 +16,15 @@ class Channel:
         self.title = self.channel['items'][0]['snippet']['title']
         self.description = self.channel['items'][0]['snippet']['description']
         self.url = f'https://www.youtube.com/channel/{self.__channel_id}'
-        self.sub_count = self.channel['items'][0]['statistics']['subscriberCount']
+        self.sub_count = int(self.channel['items'][0]['statistics']['subscriberCount'])
         self.video_count = self.channel['items'][0]['statistics']['videoCount']
         self.views_count = self.channel['items'][0]['statistics']['viewCount']
+
+    def __str__(self):
+        """
+        Возвращает информацию для пользователей "название канала(ссылка на канал)".
+        """
+        return f'{self.title}({self.url})'
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
@@ -31,16 +37,58 @@ class Channel:
     @classmethod
     def get_service(cls):
         """
-        Возвращает объект для работы с YouTube API
+        Возвращает объект для работы с YouTube API.
         """
         return cls.youtube
 
     def to_json(self, path):
         """
-        Сохраняет в файл значения атрибутов экземпляра Channel
+        Сохраняет в файл значения атрибутов экземпляра Channel.
         """
         with open(path, 'w') as f:
             data = self.__dict__
             del data['channel']
             json.dump(data, f, sort_keys=True, indent=4, ensure_ascii=False)
 
+    def __add__(self, other):
+        """
+        Складывает количество подписчиков двух каналов и
+        возвращает общее количество подписчиков.
+        """
+        return self.sub_count + other.sub_count
+
+    def __sub__(self, other):
+        """
+        Возвращает разницу подписчиков двух каналов.
+        """
+        return self.sub_count - other.sub_count
+
+    def __gt__(self, other):
+        """
+        Возвращает результат (True/False) сравнения ">" количества подписчиков на каналах.
+        """
+        return self.sub_count > other.sub_count
+
+    def __ge__(self, other):
+        """
+        Возвращает результат (True/False) сравнения ">=" количества подписчиков на каналах.
+        """
+        return self.sub_count >= other.sub_count
+
+    def __lt__(self, other):
+        """
+        Возвращает результат (True/False) сравнения "<" количества подписчиков на каналах.
+        """
+        return self.sub_count < other.sub_count
+
+    def __le__(self, other):
+        """
+        Возвращает результат (True/False) сравнения "<=" количества подписчиков на каналах.
+        """
+        return self.sub_count <= other.sub_count
+
+    def __eq__(self, other):
+        """
+        Возвращает результат (True/False) сравнения "==" количества подписчиков на каналах.
+        """
+        return self.sub_count == other.sub_count
