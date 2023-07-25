@@ -12,14 +12,23 @@ class Video:
     youtube = build('youtube', 'v3', developerKey=api_key)
 
     def __init__(self, video_id: str):
-        self.video_id: str = video_id
-        self.video_response = Video.youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
-                                                          id=video_id
-                                                          ).execute()
-        self.video_title: str = self.video_response['items'][0]['snippet']['title']
-        self.url: str = f'https://www.youtube.com/watch?v={self.video_id}'
-        self.views_count: str = self.video_response['items'][0]['statistics']['viewCount']
-        self.likes_count: int = self.video_response['items'][0]['statistics']['likeCount']
+        try:
+            self.video_id: str = video_id
+            self.video_response = Video.youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
+                                                              id=video_id
+                                                              ).execute()
+            self.video_title: str = self.video_response['items'][0]['snippet']['title']
+            self.url: str = f'https://www.youtube.com/watch?v={self.video_id}'
+            self.views_count: str = self.video_response['items'][0]['statistics']['viewCount']
+            self.likes_count: int = self.video_response['items'][0]['statistics']['likeCount']
+        except IndexError:
+            self.video_id = video_id
+            self.video_response = None
+            self.video_title = None
+            self.url = None
+            self.views_count = None
+            self.likes_count = None
+
 
     def __str__(self):
         """
